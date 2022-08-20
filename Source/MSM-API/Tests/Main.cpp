@@ -9,6 +9,7 @@ int main()
 	vMSM.IncreaseDataCount();
 
 	// If DataCount was increased, we can insert sample group to created earlier file.
+	// One more thing - use '\t' instead of tabs, I did it just only for a better look.
 	vMSM.InsertLine("	Group ShapeData" + LAST_SHAPE_DATA_INCREASE);
 	vMSM.InsertLine("	{");
 	vMSM.InsertLine("		ShapeIndex 81759");
