@@ -1,62 +1,95 @@
 #include "MSM.h"
 
+std::string MSM::GetDataLine(const std::string& vLine) const
+{
+	std::string vDataLine;
 
-std::string MSM::getDataLine(std::string line) {
-	std::string DataLine;
-	int shapedata_count = 0;
-	for (const auto& val : file_content) {
-		std::size_t found = val.find(line);
-		if (found != std::string::npos) {
-			DataLine = val;
-		}
-	}
+	for (auto& vIt : vFileContent)
+		if (vIt.find(vLine) != std::string::npos)
+			vDataLine = vIt;
 
-	return DataLine;
+	return vDataLine;
 }
 
-int MSM::getDataCount(std::string line) {
-	int number = 0;
-	for (int i = 0; i < line.size(); i++) {
-		if(std::isdigit(line[i]))
-			number = number * 10 + line[i] - '0';
-	}
+int MSM::GetDataCount(const std::string& vLine)
+{
+	int vNum = 0;
 
-	return number;
+	for (const char vIt : vLine)
+		if (std::isdigit(vIt) != 0)
+			vNum = vNum * 10 + vIt - '0';
+
+	return vNum;
 }
 
-int MSM::getLastBracketPos() {
-	int counter = 0;
-	for (const auto& val : file_content) {
-		std::size_t found = val.find(MSM::getDataLine("Group ShapeData"));
-		if (found != std::string::npos) break;
-		counter++;
+int MSM::GetLastBracketPos() const
+{
+	int vCounter = 0;
+
+	const std::string vDataLine = GetDataLine("Group ShapeData");
+
+	for (const auto& vIt : vFileContent)
+	{
+		if (vIt.find(vDataLine) != std::string::npos)
+			break;
+
+		vCounter++;
 	}
 
-	//WHY THIS WORK?!
-	for (int i = counter; i < file_content.size(); i++) {
-		std::size_t found = file_content[i].find("}"); // Find first bracket
-		if (found != std::string::npos) {
+	for (unsigned long long i = vCounter; i < vFileContent.size(); i++)
+	{
+		// Find first bracket.
+		if (vFileContent[i].find('}') != std::string::npos)
+			break;
+
+		vCounter++;
+	}
+
+	if (vFileContent[static_cast<std::deque<std::string, std::allocator<std::string>>::size_type>(vCounter) + 1].find('}') != std::string::npos)
+	{
+		vCounter++;
+		return vCounter;
+	}
+
+	for (unsigned long long i = vCounter; i < vFileContent.size(); i++)
+	{
+		// Find second bracket.
+		if (vFileContent[i].find('}') != std::string::npos)
+			break;
+
+		vCounter++;
+	}
+
+	return vCounter;
+}
+
+void MSM::InsertLine(const std::string& vLine)
+{
+	vFileContent.insert(vFileContent.begin() + GetLastBracketPos(), vLine);
+}
+
+void MSM::WriteToFile(const std::string& vFile) const
+{
+	std::ofstream vFileStream(vFile);
+
+	if (!vFileStream)
+		return;
+
+	for (const auto& vIt : vFileContent)
+		vFileStream << vIt << '\n';
+}
+
+void MSM::IncreaseDataCount()
+{
+	const auto vDataLine = GetDataLine("ShapeDataCount");
+	const auto vDataCount = GetDataCount(vDataLine);
+
+	for (auto& vIt : vFileContent)
+	{
+		if (vIt.find(vDataLine) != std::string::npos)
+		{
+			vIt = "\tShapeDataCount\t\t" + std::to_string(vDataCount + 1);
 			break;
 		}
-		counter++;
 	}
-	
-	if (file_content[counter+1].find("}") != std::string::npos) {
-		counter++;
-		return counter;
-	}
-
-	for (int i = counter; i < file_content.size(); i++) {
-		std::size_t found = file_content[i].find("}"); // Find second bracket
-		if (found != std::string::npos) {
-			break;
-		}
-		counter++;
-	}
-
-	return counter;
-}
-
-void MSM::insertLine(std::string line) {
-	file_content.insert(file_content.begin() + getLastBracketPos(), line);
 }
