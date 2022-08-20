@@ -33,8 +33,7 @@ int MSM::GetDataCount(const std::string& vLine)
 int MSM::GetLastBracketPos() const
 {
 	int vCounter = 0;
-
-	const std::string vDataLine = GetDataLine("Group ShapeData");
+	const std::string vDataLine(GetDataLine("Group ShapeData"));
 
 	for (const auto& vIt : vFileContent)
 	{
@@ -73,8 +72,8 @@ int MSM::GetLastBracketPos() const
 
 void MSM::IncreaseDataCount()
 {
-	const auto vDataLine = GetDataLine("ShapeDataCount");
-	const auto vDataCount = GetDataCount(vDataLine);
+	const std::string vDataLine(GetDataLine("ShapeDataCount"));
+	const int vDataCount(GetDataCount(vDataLine));
 
 	for (auto& vIt : vFileContent)
 	{

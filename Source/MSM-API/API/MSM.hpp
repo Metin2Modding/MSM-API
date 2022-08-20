@@ -12,7 +12,7 @@
 #include <vector>
 #include <fstream>
 
-#define LAST_SHAPE_DATA_INCREASE std::to_string(MSM::GetDataCount(vMSM.GetDataLine("Group ShapeData")) + 1)
+#define MSM_INCREASE_LAST_SHAPE_DATA std::to_string(MSM::GetDataCount(vMSM.GetDataLine("Group ShapeData")) + 1)
 
 class MSM
 {
