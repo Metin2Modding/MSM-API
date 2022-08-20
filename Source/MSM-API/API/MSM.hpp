@@ -12,6 +12,7 @@
 #include <vector>
 #include <fstream>
 
+// #define MSM_FOR_WX
 #define MSM_INCREASE_LAST_SHAPE_DATA std::to_string(MSM::GetDataCount(vMSM.GetDataLine("Group ShapeData")) + 1)
 
 class MSM
@@ -61,4 +62,8 @@ public:
 	 * Write inserted lines to MSM.
 	 */
 	void WriteToFile(const std::string& vFile) const;
+
+#ifdef MSM_FOR_WX
+	static std::string PathSeparatorToWindows(std::string vDir);
+#endif
 };

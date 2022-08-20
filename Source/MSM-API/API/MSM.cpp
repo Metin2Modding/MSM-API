@@ -12,7 +12,7 @@ std::string MSM::GetDataLine(const std::string& vLine) const
 {
 	std::string vDataLine;
 
-	for (auto& vIt : vFileContent)
+	for (const std::string& vIt : vFileContent)
 		if (vIt.find(vLine) != std::string::npos)
 			vDataLine = vIt;
 
@@ -23,7 +23,7 @@ int MSM::GetDataCount(const std::string& vLine)
 {
 	int vNum = 0;
 
-	for (const char vIt : vLine)
+	for (const char& vIt : vLine)
 		if (std::isdigit(vIt) != 0)
 			vNum = vNum * 10 + vIt - '0';
 
@@ -32,10 +32,9 @@ int MSM::GetDataCount(const std::string& vLine)
 
 int MSM::GetLastBracketPos() const
 {
-	int vCounter = 0;
-	const std::string vDataLine(GetDataLine("Group ShapeData"));
+	int vCounter = 0; const std::string& vDataLine(GetDataLine("Group ShapeData"));
 
-	for (const auto& vIt : vFileContent)
+	for (const std::string& vIt : vFileContent)
 	{
 		if (vIt.find(vDataLine) != std::string::npos)
 			break;
@@ -43,10 +42,10 @@ int MSM::GetLastBracketPos() const
 		vCounter++;
 	}
 
-	for (unsigned long long i = vCounter; i < vFileContent.size(); i++)
+	for (unsigned long long vIt = vCounter; vIt < vFileContent.size(); vIt++)
 	{
 		// Find first bracket.
-		if (vFileContent[i].find('}') != std::string::npos)
+		if (vFileContent[vIt].find('}') != std::string::npos)
 			break;
 
 		vCounter++;
@@ -58,10 +57,10 @@ int MSM::GetLastBracketPos() const
 		return vCounter;
 	}
 
-	for (unsigned long long i = vCounter; i < vFileContent.size(); i++)
+	for (unsigned long long vIt = vCounter; vIt < vFileContent.size(); vIt++)
 	{
 		// Find second bracket.
-		if (vFileContent[i].find('}') != std::string::npos)
+		if (vFileContent[vIt].find('}') != std::string::npos)
 			break;
 
 		vCounter++;
@@ -72,10 +71,9 @@ int MSM::GetLastBracketPos() const
 
 void MSM::IncreaseDataCount()
 {
-	const std::string vDataLine(GetDataLine("ShapeDataCount"));
-	const int vDataCount(GetDataCount(vDataLine));
+	const std::string& vDataLine(GetDataLine("ShapeDataCount")); const int& vDataCount(GetDataCount(vDataLine));
 
-	for (auto& vIt : vFileContent)
+	for (std::string& vIt : vFileContent)
 	{
 		if (vIt.find(vDataLine) != std::string::npos)
 		{
@@ -97,6 +95,17 @@ void MSM::WriteToFile(const std::string& vFile) const
 	if (!vFileStream)
 		return;
 
-	for (const auto& vIt : vFileContent)
+	for (const std::string& vIt : vFileContent)
 		vFileStream << vIt << '\n';
 }
+
+#ifdef MSM_FOR_WX
+std::string MSM::PathSeparatorToWindows(std::string vDir)
+{
+	for (char& vIt : vDir)
+		if (vIt == static_cast<char>(92))
+			vIt = static_cast<char>(47);
+
+	return vDir;
+}
+#endif
