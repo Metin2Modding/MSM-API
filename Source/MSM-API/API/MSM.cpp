@@ -53,7 +53,7 @@ int MSM::GetLastBracketPos() const
 		vCounter++;
 	}
 
-	if (vFileContent[static_cast<std::deque<std::string, std::allocator<std::string>>::size_type>(vCounter) + 1].find('}') != std::string::npos)
+	if (vFileContent[static_cast<std::vector<std::string, std::allocator<std::string>>::size_type>(vCounter) + 1].find('}') != std::string::npos)
 	{
 		vCounter++;
 		return vCounter;
@@ -71,6 +71,21 @@ int MSM::GetLastBracketPos() const
 	return vCounter;
 }
 
+void MSM::IncreaseDataCount()
+{
+	const auto vDataLine = GetDataLine("ShapeDataCount");
+	const auto vDataCount = GetDataCount(vDataLine);
+
+	for (auto& vIt : vFileContent)
+	{
+		if (vIt.find(vDataLine) != std::string::npos)
+		{
+			vIt = "\tShapeDataCount\t\t" + std::to_string(vDataCount + 1);
+			break;
+		}
+	}
+}
+
 void MSM::InsertLine(const std::string& vLine)
 {
 	vFileContent.insert(vFileContent.begin() + GetLastBracketPos(), vLine);
@@ -85,19 +100,4 @@ void MSM::WriteToFile(const std::string& vFile) const
 
 	for (const auto& vIt : vFileContent)
 		vFileStream << vIt << '\n';
-}
-
-void MSM::IncreaseDataCount()
-{
-	const auto vDataLine = GetDataLine("ShapeDataCount");
-	const auto vDataCount = GetDataCount(vDataLine);
-
-	for (auto& vIt : vFileContent)
-	{
-		if (vIt.find(vDataLine) != std::string::npos)
-		{
-			vIt = "\tShapeDataCount\t\t" + std::to_string(vDataCount + 1);
-			break;
-		}
-	}
 }

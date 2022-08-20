@@ -12,6 +12,8 @@
 #include <vector>
 #include <fstream>
 
+#define LAST_SHAPE_DATA_INCREASE std::to_string(MSM::GetDataCount(vMSM.GetDataLine("Group ShapeData")) + 1)
+
 class MSM
 {
 	std::vector<std::string> vFileContent;
@@ -26,8 +28,8 @@ public:
 	{
 		std::ifstream vMSMFile(vFilePath);
 
-		if (!vMSMFile)
-			return;
+		if (!vMSMFile.is_open())
+			_Exit(1);
 
 		std::string vFileLine;
 
@@ -46,14 +48,14 @@ public:
 	static int GetDataCount(const std::string& vLine);
 
 	/*
-	 * We can insert some line to MSM.
-	 */
-	void InsertLine(const std::string& vLine);
-
-	/*
 	 * Increase shape data count!
 	 */
 	void IncreaseDataCount();
+
+	/*
+	 * We can insert some line to MSM.
+	 */
+	void InsertLine(const std::string& vLine);
 
 	/*
 	 * Write inserted lines to MSM.
