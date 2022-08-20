@@ -1,9 +1,9 @@
-#include "MSM.h"
+#include "../API/MSM.h"
 
 int main()
 {
 	// At first, we must type file to edit.
-	MSM vMSM("warrior_m.msm");
+	MSM vMSM("WarriorM.msm");
 
 	// Next, we must increase ShapeDataCount.
 	vMSM.IncreaseDataCount();
@@ -18,5 +18,5 @@ int main()
 	vMSM.InsertLine("\t}");
 
 	// And the most important thing - save our changes to new file.
-	vMSM.WriteToFile("warrior_m_new.msm");
+	vMSM.WriteToFile("WarriorM.msm");
 }

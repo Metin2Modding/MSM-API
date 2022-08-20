@@ -1,4 +1,12 @@
-#include "MSM.h"
+//  __  __ ____  __  __      _    ____ ___
+// |  \/  / ___||  \/  |    / \  |  _ \_ _|
+// | |\/| \___ \| |\/| |   / _ \ | |_) | |
+// | |  | |___) | |  | |  / ___ \|  __/| |
+// |_|  |_|____/|_|  |_| /_/   \_\_|  |___|
+//
+// https://github.com/Metin2Modding/MSM-API
+
+#include "MSM.hpp"
 
 std::string MSM::GetDataLine(const std::string& vLine) const
 {

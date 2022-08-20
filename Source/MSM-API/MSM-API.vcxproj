@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{6f336f06-e62a-4fc1-8a8d-6d2ee0dc5063}</ProjectGuid>
-    <RootNamespace>MSM</RootNamespace>
+    <RootNamespace>MSM-API</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -135,11 +135,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="MSM.cpp" />
+    <ClCompile Include="Tests/Main.cpp" />
+    <ClCompile Include="API/MSM.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MSM.h" />
+    <ClInclude Include="API/MSM.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
