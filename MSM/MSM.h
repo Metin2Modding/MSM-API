@@ -1,12 +1,12 @@
 #pragma once
 
-#include <deque>
 #include <string>
+#include <vector>
 #include <fstream>
 
 class MSM
 {
-	std::deque<std::string> vFileContent;
+	std::vector<std::string> vFileContent;
 
 	/*
 	 * Find last bracket pos and return it
