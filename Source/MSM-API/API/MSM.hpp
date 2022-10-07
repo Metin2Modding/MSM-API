@@ -12,132 +12,130 @@
 #include <vector>
 #include <fstream>
 
-#define MSM_INCREASE_LAST_SHAPE_DATA std::to_string(MSM::GetDataCount(vMSM.GetDataLine("Group ShapeData")) + 1)
+#define MSM_INCREASE_LAST_SHAPE_DATA(A) std::to_string(MSM::GetDataCount((A).GetDataLine("Group ShapeData")) + 1)
 
 class MSM
 {
-	std::vector<std::string> vFileContent;
+	std::vector<std::string> FileContent;
 
-	/*
-	 * Find last bracket pos and return it
-	 */
-	[[nodiscard]] int GetLastBracketPos() const
+	//
+	// Find last bracket pos and return it.
+	//
+	[[nodiscard]] int32_t GetLastBracketPos() const
 	{
-		int vCounter = 0; const std::string& vDataLine(GetDataLine("Group ShapeData"));
+		int32_t Counter = 0;
 
-		for (const std::string& vIt : vFileContent)
+		const auto DataLine = GetDataLine("Group ShapeData");
+
+		for (const auto& It : FileContent)
 		{
-			if (vIt.find(vDataLine) != std::string::npos)
+			if (It.find(DataLine) != std::string::npos)
 				break;
 
-			vCounter++;
+			Counter++;
 		}
 
-		for (unsigned long long vIt = vCounter; vIt < vFileContent.size(); vIt++)
+		for (uint64_t It = Counter; It < FileContent.size(); It++)
 		{
-			// Find first bracket.
-			if (vFileContent[vIt].find('}') != std::string::npos)
+			if (FileContent[It].find('}') != std::string::npos)
 				break;
 
-			vCounter++;
+			Counter++;
 		}
 
-		if (vFileContent[static_cast<std::vector<std::string, std::allocator<std::string>>::size_type>(vCounter) + 1].find('}') != std::string::npos)
+		if (FileContent[static_cast<std::vector<std::string, std::allocator<std::string>>::size_type>(Counter) + 1].find('}') != std::string::npos)
 		{
-			vCounter++;
-			return vCounter;
+			Counter++;
+			return Counter;
 		}
 
-		for (unsigned long long vIt = vCounter; vIt < vFileContent.size(); vIt++)
+		for (uint64_t It = Counter; It < FileContent.size(); It++)
 		{
-			// Find second bracket.
-			if (vFileContent[vIt].find('}') != std::string::npos)
+			if (FileContent[It].find('}') != std::string::npos)
 				break;
 
-			vCounter++;
+			Counter++;
 		}
 
-		return vCounter;
+		return Counter;
 	}
 
 public:
-	explicit MSM(const std::string& vFilePath)
+	explicit MSM(const std::string& File)
 	{
-		std::ifstream vMSMFile(vFilePath);
-
-		if (!vMSMFile.is_open())
+		if (std::ifstream Stream(File); !Stream.is_open())
 			_Exit(1);
+		else
+		{
+			std::string Line;
 
-		std::string vFileLine;
-
-		while (std::getline(vMSMFile, vFileLine))
-			vFileContent.emplace_back(vFileLine);
+			while (std::getline(Stream, Line))
+				FileContent.emplace_back(Line);
+		}
 	}
 
-	/*
-	 * Return last data line. For example: We have 200 ShapeData so this function return Group ShapeData200
-	 */
-	[[nodiscard]] std::string GetDataLine(const std::string& vLine) const
+	//
+	// Return last data line. For example: We have 200 ShapeData so this function return Group ShapeData200.
+	//
+	[[nodiscard]] std::string GetDataLine(const std::string& Line) const
 	{
-		std::string vDataLine;
+		std::string DataLine;
 
-		for (const std::string& vIt : vFileContent)
-			if (vIt.find(vLine) != std::string::npos)
-				vDataLine = vIt;
+		for (const auto& It : FileContent)
+			if (It.find(Line) != std::string::npos)
+				DataLine = It;
 
-		return vDataLine;
+		return DataLine;
 	}
 
-	/*
-	 * We get number from data line. For example: Group ShapeData200 -> 200
-	 */
-	static int GetDataCount(const std::string& vLine)
+	//
+	// We get number from data line. For example: Group ShapeData200 -> 200.
+	//
+	static int32_t GetDataCount(const std::string& Line)
 	{
-		int vNum = 0;
+		int32_t Num = 0;
 
-		for (const char& vIt : vLine)
-			if (std::isdigit(vIt) != 0)
-				vNum = vNum * 10 + vIt - '0';
+		for (const auto It : Line)
+			if (std::isdigit(It) != 0)
+				Num = Num * 10 + It - '0';
 
-		return vNum;
+		return Num;
 	}
 
-	/*
-	 * Increase shape data count!
-	 */
+	//
+	// Increase shape data count!
+	//
 	void IncreaseDataCount()
 	{
-		const std::string& vDataLine(GetDataLine("ShapeDataCount")); const int& vDataCount(GetDataCount(vDataLine));
+		const auto DataLine = GetDataLine("ShapeDataCount");
+		const auto DataCount = GetDataCount(DataLine);
 
-		for (std::string& vIt : vFileContent)
+		for (auto& It : FileContent)
 		{
-			if (vIt.find(vDataLine) != std::string::npos)
+			if (It.find(DataLine) != std::string::npos)
 			{
-				vIt = "\tShapeDataCount\t\t\t" + std::to_string(vDataCount + 1);
+				It = "\tShapeDataCount\t\t\t" + std::to_string(DataCount + 1);
 				break;
 			}
 		}
 	}
 
-	/*
-	 * We can insert some line to MSM.
-	 */
-	void InsertLine(const std::string& vLine)
+	//
+	// We can insert some line to MSM.
+	//
+	void InsertLine(const std::string& Line)
 	{
-		vFileContent.insert(vFileContent.begin() + GetLastBracketPos(), vLine);
+		FileContent.insert(FileContent.begin() + GetLastBracketPos(), Line);
 	}
 
-	/*
-	 * Write inserted lines to MSM.
-	 */
-	void WriteToFile(const std::string& vFile) const
+	//
+	// Write inserted lines to MSM.
+	//
+	void WriteToFile(const std::string& File) const
 	{
-		std::ofstream vFileStream(vFile);
+		std::ofstream Stream(File);
 
-		if (!vFileStream)
-			return;
-
-		for (const std::string& vIt : vFileContent)
-			vFileStream << vIt << '\n';
+		for (const auto& It : FileContent)
+			Stream << It << '\n';
 	}
 };
