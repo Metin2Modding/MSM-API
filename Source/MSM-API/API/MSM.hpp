@@ -113,7 +113,7 @@ public:
 		{
 			if (vIt.find(vDataLine) != std::string::npos)
 			{
-				vIt = "\tShapeDataCount\t\t" + std::to_string(vDataCount + 1);
+				vIt = "\tShapeDataCount\t\t\t" + std::to_string(vDataCount + 1);
 				break;
 			}
 		}
