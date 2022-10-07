@@ -136,7 +136,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Tests/Main.cpp" />
-    <ClCompile Include="API/MSM.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="API/MSM.hpp" />
