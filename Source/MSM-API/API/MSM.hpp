@@ -4,7 +4,8 @@
 // | |  | |___) | |  | |  / ___ \|  __/| |
 // |_|  |_|____/|_|  |_| /_/   \_\_|  |___|
 //
-// https://github.com/Metin2Modding/MSM-API
+// From: https://github.com/Metin2Modding/MSM-API
+// Contributors: https://github.com/Thorek777 & https://github.com/YellowSacSpider
 
 #pragma once
 
@@ -21,11 +22,17 @@ class MSM
 	//
 	// Find last bracket pos and return it.
 	//
-	[[nodiscard]] int32_t GetLastBracketPos() const
-	{
-		int32_t Counter = 0;
+#if __cplusplus >= 201703L
+	[[nodiscard]]
+#endif
 
-		const auto DataLine = GetDataLine("Group ShapeData");
+	int32_t GetLastBracketPos() const
+	{
+		int32_t
+			Counter(0);
+
+		const auto
+			DataLine(GetDataLine("Group ShapeData"));
 
 		for (const auto& It : FileContent)
 		{
@@ -63,21 +70,25 @@ class MSM
 public:
 	explicit MSM(const std::string& File)
 	{
-		if (std::ifstream Stream(File); !Stream.is_open())
-			_Exit(1);
-		else
-		{
-			std::string Line;
+		std::ifstream Stream(File);
 
-			while (std::getline(Stream, Line))
-				FileContent.emplace_back(Line);
-		}
+		if (!Stream)
+			abort();
+
+		std::string Line;
+
+		while (std::getline(Stream, Line))
+			FileContent.emplace_back(Line);
 	}
 
 	//
 	// Return last data line. For example: We have 200 ShapeData so this function return Group ShapeData200.
 	//
-	[[nodiscard]] std::string GetDataLine(const std::string& Line) const
+#if __cplusplus >= 201703L
+	[[nodiscard]]
+#endif
+
+	std::string GetDataLine(const std::string& Line) const
 	{
 		std::string DataLine;
 
@@ -93,7 +104,7 @@ public:
 	//
 	static int32_t GetDataCount(const std::string& Line)
 	{
-		int32_t Num = 0;
+		int32_t Num(0);
 
 		for (const auto It : Line)
 			if (std::isdigit(It) != 0)
@@ -107,8 +118,11 @@ public:
 	//
 	void IncreaseDataCount()
 	{
-		const auto DataLine = GetDataLine("ShapeDataCount");
-		const auto DataCount = GetDataCount(DataLine);
+		const auto
+			DataLine(GetDataLine("ShapeDataCount"));
+
+		const auto
+			DataCount(GetDataCount(DataLine));
 
 		for (auto& It : FileContent)
 		{
