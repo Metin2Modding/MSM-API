@@ -10,19 +10,21 @@ int main()
 	//
 	// Increase HairDataCount / ShapeDataCount.
 	//
-	File.IncreaseDataCount();
+	File.IncreaseDataCount("ShapeDataCount");
 
 	//
 	// If DataCount was increased, we can insert sample group to file.
 	// One more thing - use '\t' instead of tabs, I did it just only for a better look.
 	//
-	File.InsertLine("	Group ShapeData" + MSM_INCREASE_LAST_SHAPE_DATA(File));
-	File.InsertLine("	{");
-	File.InsertLine("		ShapeIndex			41768");
-	File.InsertLine("		Model				""\"\"");
-	File.InsertLine("		SourceSkin			""\"\"");
-	File.InsertLine("		TargetSkin			""\"\"");
-	File.InsertLine("	}");
+	const std::string Group("Group ShapeData");
+
+	File.InsertLine(Group, "	" + Group, true);
+	File.InsertLine(Group, "	{");
+	File.InsertLine(Group, "		ShapeIndex			41768");
+	File.InsertLine(Group, "		Model				""\"\"");
+	File.InsertLine(Group, "		SourceSkin			""\"\"");
+	File.InsertLine(Group, "		TargetSkin			""\"\"");
+	File.InsertLine(Group, "	}");
 
 	//
 	// And last thing - save our changes to file.

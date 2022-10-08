@@ -13,8 +13,6 @@
 #include <vector>
 #include <fstream>
 
-#define MSM_INCREASE_LAST_SHAPE_DATA(A) std::to_string(MSM::GetDataCount((A).GetDataLine("Group ShapeData")) + 1)
-
 class MSM
 {
 	std::vector<std::string> FileContent;
@@ -26,13 +24,13 @@ class MSM
 	[[nodiscard]]
 #endif
 
-	int32_t GetLastBracketPos() const
+	int32_t GetLastBracketPos(const std::string& From) const
 	{
 		int32_t
 			Counter(0);
 
 		const auto
-			DataLine(GetDataLine("Group ShapeData"));
+			DataLine(GetDataLine(From));
 
 		for (const auto& It : FileContent)
 		{
@@ -116,10 +114,10 @@ public:
 	//
 	// Increase shape data count!
 	//
-	void IncreaseDataCount()
+	void IncreaseDataCount(const std::string& What)
 	{
 		const auto
-			DataLine(GetDataLine("ShapeDataCount"));
+			DataLine(GetDataLine(What));
 
 		const auto
 			DataCount(GetDataCount(DataLine));
@@ -128,7 +126,7 @@ public:
 		{
 			if (It.find(DataLine) != std::string::npos)
 			{
-				It = "\tShapeDataCount\t\t\t" + std::to_string(DataCount + 1);
+				It = "\t" + What + "\t\t\t" + std::to_string(DataCount + 1);
 				break;
 			}
 		}
@@ -137,9 +135,12 @@ public:
 	//
 	// We can insert some line to MSM.
 	//
-	void InsertLine(const std::string& Line)
+	void InsertLine(const std::string& To, const std::string& Line, const bool IncreaseLastShapeData = false)
 	{
-		FileContent.insert(FileContent.begin() + GetLastBracketPos(), Line);
+		if (!IncreaseLastShapeData)
+			FileContent.insert(FileContent.begin() + GetLastBracketPos(To), Line);
+		else
+			FileContent.insert(FileContent.begin() + GetLastBracketPos(To), Line + std::to_string(GetDataCount(GetDataLine(To)) + 1));
 	}
 
 	//
